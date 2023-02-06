@@ -1,15 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>你好!</title>
+    <title>Socket.IO chat</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #b { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+    </style>
 </head>
 <body>
-<h1>你好!</h1>
-我们正在使用 Node.js <span id="node-version"></span>,
-Chromium <span id="chrome-version"></span>,
-和 Electron <span id="electron-version"></span>.
+<ul id="messages"></ul>
+<form action="">
+    <input id="m" autocomplete="off" /><button>Send</button>
+</form>
+<!--<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>-->
+<!--<script src="https://code.jquery.com/jquery-1.11.1.js"></script>-->
+<script src="./static/jquery.js"></script>
+<script src="./static/socketio.js"></script>
+<script>
+    var socket = io('ws://localhost:8111');
+    var s2 = io("ws://localhost:8111/chat");
+
+    socket.on('reply', function(msg){
+        $('#messages').append($('<li>').text(msg));
+    });
+
+    $('form').submit(function(){
+        s2.emit('msg', $('#m').val(), function(data){
+            $('#messages').append($('<li>').text('ACK CALLBACK: ' + data));
+        });
+
+        socket.emit('notice', $('#m').val());
+
+        $('#m').val('');
+        return false;
+    });
+</script>
 </body>
 </html>

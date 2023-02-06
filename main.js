@@ -20,11 +20,12 @@ app.whenReady().then(() => {
     try {
         log.info("start")
         log.info(process.resourcesPath)
-        childProcess = execFile('/Users/mahao/projects/my-electron-app/server/socketio');
-
-        // let childProcess = execFile(process.resourcesPath+'/app/server/socketio');
+        log.info(path.join(__dirname,'/static/socketio') )
+        // childProcess = execFile('/Users/mahao/projects/my-electron-app/static/socketio');
+        childProcess = execFile( path.join(__dirname,'/static/socketio') );
+        // let childProcess = execFile(process.resourcesPath+'/app/static/socketio');
         // console.log(childProcess)
-        log.info(childProcess)
+        // log.info(childProcess)
     } catch (e) {
         log.error("error", e);
     }
