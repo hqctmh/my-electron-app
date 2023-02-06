@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require('electron')
+const log = require('electron-log')
 const path = require('path')
-
+let childProcess
 function createWindow () {
     const win = new BrowserWindow({
         width: 800,
@@ -14,6 +15,19 @@ function createWindow () {
 }
 
 app.whenReady().then(() => {
+    log.info(app.getAppPath())
+    const { execFile } = require('child_process')
+    try {
+        log.info("start")
+        log.info(process.resourcesPath)
+        childProcess = execFile('/Users/mahao/projects/my-electron-app/server/socketio');
+
+        // let childProcess = execFile(process.resourcesPath+'/app/server/socketio');
+        // console.log(childProcess)
+        log.info(childProcess)
+    } catch (e) {
+        log.error("error", e);
+    }
     createWindow()
 
     app.on('activate', () => {
@@ -24,7 +38,12 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+    childProcess.kill()
+    app.quit()
+    // if (process.platform !== 'darwin') {
+    //     childProcess.off()
+    //     app.quit()
+    // }
 })
+
+
